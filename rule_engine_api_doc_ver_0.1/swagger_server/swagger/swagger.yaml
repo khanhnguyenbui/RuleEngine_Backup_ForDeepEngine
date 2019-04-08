@@ -1,0 +1,702 @@
+---
+swagger: "2.0"
+info:
+  description: "This is a sample Shopper server.  You can find out more at [http://deepengine.ai](http://deepengine.ai)\n"
+  version: "1.0.0"
+  title: "Shopper"
+  termsOfService: "http://deepengine.ai/terms/"
+  contact:
+    email: "tung@deepengine.ai"
+host: "virtserver.swaggerhub.com"
+basePath: "/deepengine/Shopper/1.0.0"
+tags:
+- name: "User"
+  description: "Creat, Read, Update, Delete (CRUD) User"
+  externalDocs:
+    description: "Find out more"
+    url: "http://deepengine.ai"
+- name: "Query"
+  description: "Search, Creat, Update, Delete Query"
+  externalDocs:
+    description: "Find out more"
+    url: "http://deepengine.ai"
+- name: "Segmentation"
+  description: "Search, Creat, Update, Delete and Execute Segmentation"
+  externalDocs:
+    description: "Find out more"
+    url: "http://deepengine.ai"
+- name: "Personalization"
+  description: "Search, Creat, Update, Delete and Execute Personalization"
+  externalDocs:
+    description: "Find out more"
+    url: "http://deepengine.ai"
+schemes:
+- "https"
+- "http"
+paths:
+  /user/all:
+    get:
+      tags:
+      - "User"
+      summary: "Get all users"
+      description: "Get all users information."
+      operationId: "all_user"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters: []
+      responses:
+        200:
+          description: "Successful"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/User"
+      x-swagger-router-controller: "swagger_server.controllers.user_controller"
+  /user/{userID}:
+    get:
+      tags:
+      - "User"
+      summary: "Get user by userID"
+      operationId: "get_user_by_id"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "userID"
+        in: "path"
+        description: "The userID that needs to be fetched. Use 1 for testing."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful"
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "Invalid userID supplied"
+        404:
+          description: "User not found"
+      x-swagger-router-controller: "swagger_server.controllers.user_controller"
+    post:
+      tags:
+      - "User"
+      summary: "Create user"
+      description: "Create new user."
+      operationId: "create_user"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "userID"
+        in: "path"
+        description: "userID that need to be created"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        201:
+          description: "Successful"
+        400:
+          description: "UserID already exists"
+      x-swagger-router-controller: "swagger_server.controllers.user_controller"
+    put:
+      tags:
+      - "User"
+      summary: "Updated user"
+      description: "Update user information."
+      operationId: "update_user"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "userID"
+        in: "path"
+        description: "userID that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "Successful"
+        404:
+          description: "UserID not exists"
+      x-swagger-router-controller: "swagger_server.controllers.user_controller"
+    delete:
+      tags:
+      - "User"
+      summary: "Delete user"
+      description: "Delete user."
+      operationId: "delete_user"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "userID"
+        in: "path"
+        description: "The userID that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful"
+        404:
+          description: "UserID not exists"
+      x-swagger-router-controller: "swagger_server.controllers.user_controller"
+  /method/query/all:
+    get:
+      tags:
+      - "Query"
+      summary: "Get all queries"
+      description: "Get all queries."
+      operationId: "all_query"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters: []
+      responses:
+        200:
+          description: "successful"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Query"
+      x-swagger-router-controller: "swagger_server.controllers.query_controller"
+  /method/query/{queryID}:
+    get:
+      tags:
+      - "Query"
+      summary: "Get query by queryID"
+      operationId: "get_query_by_id"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "queryID"
+        in: "path"
+        description: "The queryID that needs to be fetched. Use 1 for testing."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful"
+          schema:
+            $ref: "#/definitions/Query"
+        400:
+          description: "Invalid queryID supplied"
+        404:
+          description: "Query not found"
+      x-swagger-router-controller: "swagger_server.controllers.query_controller"
+    post:
+      tags:
+      - "Query"
+      summary: "Create query"
+      description: "Create new query."
+      operationId: "create_query"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "queryID"
+        in: "path"
+        description: "queryID that need to be created"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated query object"
+        required: true
+        schema:
+          $ref: "#/definitions/Query"
+      responses:
+        201:
+          description: "successful"
+          schema:
+            $ref: "#/definitions/Query"
+        400:
+          description: "Invalid queryID supplied"
+        404:
+          description: "Query not found"
+      x-swagger-router-controller: "swagger_server.controllers.query_controller"
+    put:
+      tags:
+      - "Query"
+      summary: "Updated query"
+      description: "Update query information."
+      operationId: "update_query"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "queryID"
+        in: "path"
+        description: "queryID that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated query object"
+        required: true
+        schema:
+          $ref: "#/definitions/Query"
+      responses:
+        202:
+          description: "successful"
+          schema:
+            $ref: "#/definitions/Query"
+        400:
+          description: "Invalid queryID supplied"
+        404:
+          description: "Query not found"
+      x-swagger-router-controller: "swagger_server.controllers.query_controller"
+    delete:
+      tags:
+      - "Query"
+      summary: "Delete query"
+      description: "Delete query."
+      operationId: "delete_query"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "queryID"
+        in: "path"
+        description: "The queryID that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        202:
+          description: "successful"
+        400:
+          description: "Invalid queryID supplied"
+        404:
+          description: "Query not found"
+      x-swagger-router-controller: "swagger_server.controllers.query_controller"
+  /method/segmentation/all:
+    get:
+      tags:
+      - "Segmentation"
+      summary: "Get all segmentations"
+      description: "Get all segmentations."
+      operationId: "all_segmentation"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters: []
+      responses:
+        200:
+          description: "successful"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Segmentation"
+      x-swagger-router-controller: "swagger_server.controllers.segmentation_controller"
+  /method/segmentation/{segID}:
+    get:
+      tags:
+      - "Segmentation"
+      summary: "Get query by segID"
+      operationId: "get_segmentation_by_id"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "segID"
+        in: "path"
+        description: "The segID that needs to be fetched. Use 1 for testing."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful"
+          schema:
+            $ref: "#/definitions/Segmentation"
+        400:
+          description: "Invalid segID supplied"
+        404:
+          description: "Segmentation not found"
+      x-swagger-router-controller: "swagger_server.controllers.segmentation_controller"
+    post:
+      tags:
+      - "Segmentation"
+      summary: "Create Segmentation"
+      description: "Create new Segmentation."
+      operationId: "create_segmentation"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "segID"
+        in: "path"
+        description: "segID that need to be created"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Create Segmentation"
+        required: true
+        schema:
+          $ref: "#/definitions/Segmentation"
+      responses:
+        201:
+          description: "successful"
+          schema:
+            $ref: "#/definitions/Segmentation"
+        400:
+          description: "Invalid segID supplied"
+        404:
+          description: "Segmentation not found"
+      x-swagger-router-controller: "swagger_server.controllers.segmentation_controller"
+    put:
+      tags:
+      - "Segmentation"
+      summary: "Updated segmentation"
+      description: "Update Segmentation"
+      operationId: "update_segmentation"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "segID"
+        in: "path"
+        description: "segID that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Update Segmentation"
+        required: true
+        schema:
+          $ref: "#/definitions/Segmentation"
+      responses:
+        202:
+          description: "successful"
+          schema:
+            $ref: "#/definitions/Segmentation"
+        400:
+          description: "Invalid segID supplied"
+        404:
+          description: "Segmentation not found"
+      x-swagger-router-controller: "swagger_server.controllers.segmentation_controller"
+    delete:
+      tags:
+      - "Segmentation"
+      summary: "Delete Segmentation"
+      description: "Delete Segmentation."
+      operationId: "delete_segmentation"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "segID"
+        in: "path"
+        description: "The segID that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        202:
+          description: "successful"
+        400:
+          description: "Invalid segID supplied"
+        404:
+          description: "Segmentation not found"
+      x-swagger-router-controller: "swagger_server.controllers.segmentation_controller"
+  /method/segmentation/execute/{segID}:
+    get:
+      tags:
+      - "Segmentation"
+      summary: "Execute a segmentation"
+      description: "Execute a segmentation."
+      operationId: "execute_segmentation"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "segID"
+        in: "path"
+        description: "segID that need to be execute"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/User"
+        404:
+          description: "User not found"
+      x-swagger-router-controller: "swagger_server.controllers.segmentation_controller"
+  /method/personalization/all:
+    get:
+      tags:
+      - "Personalization"
+      summary: "Get all Personalizations"
+      description: "Get all Personalizations."
+      operationId: "all_personalization"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters: []
+      responses:
+        200:
+          description: "successful"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Personalization"
+      x-swagger-router-controller: "swagger_server.controllers.personalization_controller"
+  /method/personalization/{perID}:
+    get:
+      tags:
+      - "Personalization"
+      summary: "Get Personalization by perID"
+      operationId: "get_personalization_by_id"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "perID"
+        in: "path"
+        description: "The perID that needs to be fetched. Use 1 for testing."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful"
+          schema:
+            $ref: "#/definitions/Personalization"
+        400:
+          description: "Invalid perID supplied"
+        404:
+          description: "Personalization not found"
+      x-swagger-router-controller: "swagger_server.controllers.personalization_controller"
+    post:
+      tags:
+      - "Personalization"
+      summary: "Create Personalization"
+      description: "Create new Personalization."
+      operationId: "create_personalization"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "perID"
+        in: "path"
+        description: "perID that need to be created"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Create Personalization"
+        required: true
+        schema:
+          $ref: "#/definitions/Personalization"
+      responses:
+        201:
+          description: "successful"
+          schema:
+            $ref: "#/definitions/Personalization"
+        400:
+          description: "Invalid perID supplied"
+        404:
+          description: "Personalization not found"
+      x-swagger-router-controller: "swagger_server.controllers.personalization_controller"
+    put:
+      tags:
+      - "Personalization"
+      summary: "Updated Personalization"
+      description: "Update Personalization"
+      operationId: "update_personalization"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "perID"
+        in: "path"
+        description: "perID that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Update Personalization"
+        required: true
+        schema:
+          $ref: "#/definitions/Personalization"
+      responses:
+        202:
+          description: "successful"
+          schema:
+            $ref: "#/definitions/Personalization"
+        400:
+          description: "Invalid perID supplied"
+        404:
+          description: "Personalization not found"
+      x-swagger-router-controller: "swagger_server.controllers.personalization_controller"
+    delete:
+      tags:
+      - "Personalization"
+      summary: "Delete Personalization"
+      description: "Delete Personalization."
+      operationId: "delete_personalization"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "perID"
+        in: "path"
+        description: "The perID that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        202:
+          description: "successful"
+        400:
+          description: "Invalid perID supplied"
+        404:
+          description: "Personalization not found"
+      x-swagger-router-controller: "swagger_server.controllers.personalization_controller"
+  /method/personalization/execute/{userID}/{perID}:
+    get:
+      tags:
+      - "Personalization"
+      summary: "Execute a Personalization"
+      description: "Execute a Personalization."
+      operationId: "execute_personalization"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "userID"
+        in: "path"
+        description: "The userID that needs to be calculator"
+        required: true
+        type: "string"
+      - name: "perID"
+        in: "path"
+        description: "perID that need to be execute"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful"
+          schema:
+            type: "integer"
+      x-swagger-router-controller: "swagger_server.controllers.personalization_controller"
+securityDefinitions:
+  petstore_auth:
+    type: "oauth2"
+    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:pets: "modify pets in your account"
+      read:pets: "read your pets"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  User:
+    type: "object"
+    properties:
+      userID:
+        type: "string"
+        description: "Unique..."
+      birthDate:
+        type: "integer"
+        format: "int32"
+      birthMonth:
+        type: "integer"
+        format: "int32"
+      birthYear:
+        type: "integer"
+        format: "int32"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+    xml:
+      name: "User"
+    example:
+      birthMonth: 6
+      firstName: "firstName"
+      lastName: "lastName"
+      birthYear: 1
+      userID: "userID"
+      birthDate: 0
+  Query:
+    type: "object"
+    properties:
+      queryID:
+        type: "string"
+      queryName:
+        type: "string"
+      content:
+        type: "string"
+    xml:
+      name: "Query"
+    example:
+      queryName: "queryName"
+      content: "content"
+      queryID: "queryID"
+  Segmentation:
+    type: "object"
+    properties:
+      segID:
+        type: "string"
+      segName:
+        type: "string"
+      queryID:
+        type: "string"
+    xml:
+      name: "Segmentation"
+    example:
+      segID: "segID"
+      segName: "segName"
+      queryID: "queryID"
+  SegmentationPoint:
+    type: "object"
+    properties:
+      segID:
+        type: "string"
+      point:
+        type: "integer"
+    xml:
+      name: "SegmentationPoint"
+    example:
+      segID: "segID"
+      point: 0
+  Personalization:
+    type: "object"
+    properties:
+      perID:
+        type: "string"
+      perName:
+        type: "string"
+      content:
+        type: "array"
+        items:
+          $ref: "#/definitions/SegmentationPoint"
+    xml:
+      name: "Personalization"
+    example:
+      perID: "perID"
+      perName: "perName"
+      content:
+      - segID: "segID"
+        point: 0
+      - segID: "segID"
+        point: 0
+externalDocs:
+  description: "Find out more"
+  url: "http://deepengine.ai"
