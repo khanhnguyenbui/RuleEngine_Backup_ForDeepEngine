@@ -4,6 +4,7 @@
 
 ## Easy usage
 The Rule Engine server run on a Flask API framework, which is currently available online at: http://35.237.224.155/
+
 Endpoints description could be seen on a Swagger site at: https://app.swaggerhub.com/apis/deepengine/Shopper/
 
 
