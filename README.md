@@ -11,7 +11,9 @@ Endpoints description could be seen on a Swagger site at: https://app.swaggerhub
 ## Deployment
 The Rule Engine API server and the Swagger server are in their correspondent folders. 
 
-For the Rule Engine server, it is currently deployed on Google Cloud Compute VM, firstly by installing required packages:
+For the Rule Engine server, it is currently deployed on Google Cloud Compute VM
+
+1. Firstly by installing required packages:
 
 ```
 pip3 install -r requirements.txt
@@ -21,7 +23,14 @@ or (depends on which python is running)
 python -m pip install -r requirements.txt
 ```
 
-Then simply run the server by:
+2. Make sure you don't have any other querybuilder package by pip freeze. Otherwise, clean it.
+
+3. Cd to querybuilder, then run:
+```
+python setup.py
+```
+
+4. Then simply run the server by:
 ```
 python flaskWebServerAPIPortal
 ```
