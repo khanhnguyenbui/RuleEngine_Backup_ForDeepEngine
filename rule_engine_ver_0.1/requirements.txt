@@ -6,3 +6,4 @@ uwsgi
 pandas
 elasticsearch
 requests_aws4auth
+elasticsearch-dsl
