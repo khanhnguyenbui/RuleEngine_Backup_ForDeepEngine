@@ -36,8 +36,8 @@ The Google Cloud VM has been paid for several months and will be open for free u
 - Please note that the current "Try it out" function on the Swagger site won't work, however, the Rule Engine server works with other methods such as curl or Postman.
 - You might need to see the current Elasticsearch server at http://35.237.224.155:5601 to know what are the indexes and their mappings.
 - For Windows user:
-  -- edit 0.0.0.0 to localhost in flaskWebServerAPIPortal
-  -- remove uwsgi in requirements.txt
+-- edit 0.0.0.0 to localhost in flaskWebServerAPIPortal
+-- remove uwsgi in requirements.txt
 
 
 
