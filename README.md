@@ -23,7 +23,7 @@ or (depends on which python is running)
 python -m pip install -r requirements.txt
 ```
 
-2. Make sure you don't have any other querybuilder package by pip freeze. Otherwise, clean it.
+2. Make sure you don't have any other querybuilder package by pip freeze (e.g. querybuilder, jqueryquerybuilder, django-query-builder). Otherwise, clean it.
 
 3. Cd to querybuilder, then run:
 ```
