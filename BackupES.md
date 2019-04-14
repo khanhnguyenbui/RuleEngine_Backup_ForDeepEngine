@@ -55,19 +55,8 @@ We might get this result, it means the backup is in progress.
       "version_id": 6040399,
       "version": "6.4.3",
       "indices": [
-        "bookdb_index",
-        "my_index_datetime",
         "omnovos_recipe",
-        "omnovos_shopper",
-        "log_test",
-        "log_test2",
-        "omnovos_transaction",
-        "omnovos_question",
-        "favorite_recipes",
-        "test",
-        "bookdb_index2",
-        ".kibana",
-        "shoppers"
+        "omnovos_shopper"
       ],
       "include_global_state": true,
       "state": "IN_PROGRESS",
