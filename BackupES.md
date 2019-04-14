@@ -1,3 +1,6 @@
+# Elasticsearch Backup/Migragation
+
+## Preparation
 For both source and target ES, cd to \config\, open elasticsearch.yml. Add this (fix the url to your environment): 
 ```
 # ----------------------------------- Paths ------------------------------------
@@ -12,8 +15,9 @@ For both source and target ES, cd to \config\, open elasticsearch.yml. Add this 
 #
 path.repo: E:\CurrentProjects\forAllan\elasticsearch-6.4.3\backups
 ```
-
 After changing the yml, restart ES instances.
+
+## Create backup on source
 On source’s kibana:
 Create backup:
 ```
@@ -29,6 +33,11 @@ PUT /_snapshot/omnovos_backup
 Create a snapshot of all data in the backup:
 ```
 PUT /_snapshot/omnovos_backup/snapshot_1?wait_for_completion=true
+{
+  "indices": "omnovos_shopper,omnovos_recipe",
+  "ignore_unavailable": true,
+  "include_global_state": false
+}
 ```
 
 For big datasets, it might not show any confirmation, or a timeout response. No problem. Instead, run this query to check its status:
@@ -80,6 +89,49 @@ You might get this result, it means the backup is in progress.
 ```
 When it shows "SUCCESS", it's done.
 
+## Restore data on target
 Copy folder \backups\my_backup_location to the target \backups\
 Now, start target ES instance.
+Create the same backup:
+```
+PUT /_snapshot/omnovos_backup
+{
+  "type": "fs",
+  "settings": {
+    "location": "my_backup_location"
+  }
+}
+```
+Note that data has been transfer, so now we already have the previous snapshot, check by:
+```
+GET /_snapshot/omnovos_backup/snapshot_1
+```
+We should get SUCCESS response.
+Restore by:
+```
+POST /_snapshot/omnovos_backup/snapshot_1/_restore
+{
+  "indices": "omnovos_shopper,omnovos_recipe",
+  "ignore_unavailable": true,
+  "include_global_state": true,
+  "rename_pattern": "index_(.+)",
+  "rename_replacement": "restored_index_$1"
+}
+```
+We should get:
+```
+{
+  "accepted": true
+}
+```
 
+## Notes
+Note that in the above example, two indexes chosen for migration are omnovos_shopper,omnovos_recipe. If none specified, ES will backup all indexes. 
+The queries are simple:
+```
+PUT /_snapshot/omnovos_backup/snapshot_1?wait_for_completion=true
+```
+and 
+```
+POST /_snapshot/omnovos_backup/snapshot_1/_restore
+```
