@@ -1,4 +1,4 @@
-For both source and target ES, cd to \config\, open elasticsearch.yml. Add this:
+For both source and target ES, cd to \config\, open elasticsearch.yml. Add this (fix the url to your environment): 
 ```
 # ----------------------------------- Paths ------------------------------------
 #
@@ -80,4 +80,6 @@ You might get this result, it means the backup is in progress.
 ```
 When it shows "SUCCESS", it's done.
 
-Now, 
+Copy folder \backups\my_backup_location to the target \backups\
+Now, start target ES instance.
+
