@@ -18,8 +18,7 @@ path.repo: E:\CurrentProjects\forAllan\elasticsearch-6.4.3\backups
 After changing the yml, restart ES instances.
 
 ## Create backup on source
-On source’s kibana:
-Create backup:
+On source’s kibana, create backup:
 ```
 PUT /_snapshot/omnovos_backup
 {
