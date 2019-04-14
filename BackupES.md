@@ -44,7 +44,7 @@ For big datasets, it might not show any confirmation, or a timeout response. No 
 GET /_snapshot/omnovos_backup/snapshot_1
 ```
 
-You might get this result, it means the backup is in progress. 
+We might get this result, it means the backup is in progress. 
 
 ```
 {
@@ -101,7 +101,7 @@ PUT /_snapshot/omnovos_backup
   }
 }
 ```
-Note that data has been transfer, so now we already have the previous snapshot, check by:
+Note that data has been transfered, so now we already have the previous snapshot, check by:
 ```
 GET /_snapshot/omnovos_backup/snapshot_1
 ```
