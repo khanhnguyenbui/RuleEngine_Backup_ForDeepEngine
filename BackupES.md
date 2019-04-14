@@ -29,7 +29,7 @@ PUT /_snapshot/omnovos_backup
 }
 ```
 
-Create a snapshot of all data in the backup:
+Create a snapshot in the backup:
 ```
 PUT /_snapshot/omnovos_backup/snapshot_1?wait_for_completion=true
 {
