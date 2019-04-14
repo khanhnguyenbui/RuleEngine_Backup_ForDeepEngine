@@ -1,3 +1,42 @@
+For both source and target ES, cd to \config\, open elasticsearch.yml. Add this:
+```
+# ----------------------------------- Paths ------------------------------------
+#
+# Path to directory where to store the data (separate multiple locations by comma):
+#
+#path.data: /path/to/data
+#
+# Path to log files:
+#
+#path.logs: /path/to/logs
+#
+path.repo: E:\CurrentProjects\forAllan\elasticsearch-6.4.3\backups
+```
+
+After changing the yml, restart ES instances.
+On source’s kibana:
+Create backup:
+```
+PUT /_snapshot/omnovos_backup
+{
+  "type": "fs",
+  "settings": {
+    "location": "my_backup_location"
+  }
+}
+```
+
+Create a snapshot of all data in the backup:
+```
+PUT /_snapshot/omnovos_backup/snapshot_1?wait_for_completion=true
+```
+
+For big datasets, it might not show any confirmation, or a timeout response. No problem. Instead, run this query to check its status:
+```
+GET /_snapshot/omnovos_backup/snapshot_1
+```
+
+You might get this result, it means the backup is in progress. 
 
 ```
 {
@@ -39,3 +78,6 @@
   ]
 }
 ```
+When it shows "SUCCESS", it's done.
+
+Now, 
