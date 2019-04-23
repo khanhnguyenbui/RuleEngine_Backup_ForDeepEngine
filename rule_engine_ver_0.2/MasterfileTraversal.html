@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="http://35.237.224.155:5000/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://35.237.224.155:5000/static/css/query-builder.default.min.css">
+<style>
+ul.tree li {
+    list-style-type: none;
+    position: relative;
+}
+
+ul.tree li ul {
+    display: none;
+}
+
+ul.tree li.open > ul {
+    display: block;
+}
+
+ul.tree li a {
+    color: black;
+    text-decoration: none;
+}
+
+ul.tree li a:before {
+    height: 1em;
+    padding:0 .1em;
+    font-size: .8em;
+    display: block;
+    position: absolute;
+    left: -1.3em;
+    top: .2em;
+}
+
+ul.tree li > a:not(:last-child):before {
+    content: '+';
+}
+
+ul.tree li.open > a:not(:last-child):before {
+    content: '-';
+}
+</style>
+</head>
+<body>
+
+
+ <label for="index">Select index (select one):</label>
+      <select class="form-control" id="index" >
+        
+      </select>
+
+    <div id="builder">
+    </div>
+    <div class="btn-group">
+
+        <button id="btn-reset" class="btn btn-warning reset" data-target="basic">Reset</button>
+        <button id="btn-get" class="btn btn-primary parse-json" data-target="basic">Get rules</button>
+    </div>
+ </br>
+ <label for="querybuilderrule">Querybuilder rules:</label>
+ </br>
+ <textarea name="" id="querybuilderrule" rows="4" cols="50"></textarea>
+</br>
+  <label for="elasticresultrule">Elastic rules and search results:</label>
+ </br>
+ <textarea name="" id="elasticresultrule" rows="4" cols="50" ></textarea>
+</br>
+
+
+</br>
+</br>
+Below is the traversed tree from the master file. End nodes are leaves with associated datatypes.
+
+<ul id="tree-master" class="tree">
+</ul>
+
+    <script src="http://35.237.224.155:5000/static/js/jquery.min.js"></script>
+    <script src="http://35.237.224.155:5000/static/js/doT.min.js"></script>
+    <script src="http://35.237.224.155:5000/static/js/jQuery.extendext.min.js"></script>
+    <script src="http://35.237.224.155:5000/static/js/query-builder.min.js"></script>
+    <script src="http://35.237.224.155:5000/static/js/query-builder-elasticsearch.js"></script>
+    <script src="http://35.237.224.155:5000/static/js/bootstrap.min.js"></script>
+    <script src="http://35.237.224.155:5000/static/js/bootstrap-datepicker.min.js"></script>
+    <script src="http://35.237.224.155:5000/static/js/moment.min.js"></script>
+    <script type="text/javascript">
+
+   
+
+    var indices = {
+	"master_file": {
+		"elasticsearch_mapping": {
+			"favorite_recipes": {
+				"mappings": {
+					"favorite_recipe": {
+						"properties": {
+							"createTime": {
+								"type": "long"
+							},
+							"favoriteRecipeId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"isFavorite": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"recipeId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shopperId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"shopping_list_items": {
+				"mappings": {
+					"shopping_list_item": {
+						"properties": {
+							"bpcId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"checkedState": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"createTime": {
+								"type": "date"
+							},
+							"dataSource": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"deleteTime": {
+								"type": "date"
+							},
+							"productId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shopperId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shoppingListItemId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"text": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"updateTime": {
+								"type": "date"
+							}
+						}
+					}
+				}
+			},
+			"preferred_stores": {
+				"mappings": {
+					"preferred_store": {
+						"properties": {
+							"createTime": {
+								"type": "date"
+							},
+							"preferredStoreId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shopperId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"storeId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"shoppers": {
+				"mappings": {
+					"shopper": {
+						"properties": {
+							"shopperID": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shopperId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"validFields": {
+								"type": "nested",
+								"properties": {
+									"birthDate": {
+										"type": "long"
+									},
+									"birthMonth": {
+										"type": "long"
+									},
+									"birthYear": {
+										"type": "long"
+									},
+									"email": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									},
+									"firstName": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									},
+									"gender": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									},
+									"lastName": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									},
+									"phoneNumber": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									},
+									"photoURL": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									},
+									"point": {
+										"type": "long"
+									},
+									"postalCode": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"shopper_values": {
+				"mappings": {
+					"shopper_value": {
+						"properties": {
+							"id": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"isActive": {
+								"type": "boolean"
+							},
+							"name": {
+								"type": "text"
+							},
+							"type": {
+								"type": "text"
+							}
+						}
+					}
+				}
+			},
+			"questions": {
+				"mappings": {
+					"question": {
+						"properties": {
+							"answers": {
+								"type": "nested",
+								"properties": {
+									"answers": {
+										"type": "nested",
+                                        "properties": {
+                                    "A": {
+                                        "type": "long"
+                                    },
+                                    "B": {
+                                        "type": "date"
+                                    },
+                                    "C": {
+                                        "type": "text",
+                                        "fields": {
+                                            "keyword": {
+                                                "type": "keyword",
+                                                "ignore_above": 256
+                                            }
+                                        }
+                                    },
+                                    "D": {
+                                        "type": "text",
+                                        "fields": {
+                                            "keyword": {
+                                                "type": "keyword",
+                                                "ignore_above": 256
+                                            }
+                                        }
+                                    }
+                                }
+									},
+									"createTime": {
+										"type": "date"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"answers": {
+				"mappings": {
+					"answer": {
+						"properties": {
+							"answerId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"answers": {
+								"type": "nested",
+								"properties": {
+									"4028828a68daacdb0168dacf1cf00000": {
+										"type": "long"
+									},
+									"4028828a68daacdb0168dacf4ce10001": {
+										"type": "date"
+									},
+									"4028828a68daacdb0168dacf6eac0002": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									},
+									"4028828a68daacdb0168dacf7c190003": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									}
+								}
+							},
+							"createTime": {
+								"type": "date"
+							},
+							"questionId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shopperId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"shared_recipes": {
+				"mappings": {
+					"shared_recipe": {
+						"properties": {
+							"createTime": {
+								"type": "date"
+							},
+							"recipeId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"sharedRecipeId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shopperId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"rated_recipes": {
+				"mappings": {
+					"rated_recipe": {
+						"properties": {
+							"createTime": {
+								"type": "date"
+							},
+							"ratedRecipeId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"rating": {
+								"type": "long"
+							},
+							"recipeId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shopperId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"datatypes_operators": {
+			"long": [{
+					"equal": ["int"]
+				}, {
+					"not_equals": ["int"]
+				}, {
+					"less": ["int"]
+				}, {
+					"less_or_equal": ["int"]
+				}, {
+					"greater": ["int"]
+				}, {
+					"greater_or_equal": ["int"]
+				}, {
+					"between": ["int", "int"]
+				}, {
+					"not_between": ["int", "int"]
+				}, {
+					"is_null": []
+				}, {
+					"not_null": []
+				}
+			],
+			"string": [{
+					"equal": ["string"]
+				}, {
+					"not_equal": ["string"]
+				}, {
+					"is_null": []
+				}, {
+					"not_null": []
+				}, {
+					"begin_with": ["string"]
+				}, {
+					"not_begin_with": ["string"]
+				}, {
+					"contain": ["string"]
+				}, {
+					"not_contain": ["string"]
+				}, {
+					"end_with": ["string"]
+				}, {
+					"not_end_with": ["string"]
+				}
+			],
+			"date": [{
+					"equal": ["date"]
+				}, {
+					"not_equal": ["date"]
+				}, {
+					"between": ["date", "date"]
+				}, {
+					"not_between": ["date", "date"]
+				}, {
+					"is_null": []
+				}, {
+					"not_null": []
+				}, {
+					"age": ["int"]
+				}, {
+					"year": ["int"]
+				}, {
+					"month/date": ["int"]
+				}, {
+					"month": ["int"]
+				}, {
+					"date": ["int"]
+				}, {
+					"before": ["date"]
+				}, {
+					"after": ["date"]
+				}
+			],
+			"time": [{
+					"equal": ["time"]
+				}, {
+					"not_equal": ["time"]
+				}, {
+					"between": ["time", "time"]
+				}, {
+					"not_between": ["time", "time"]
+				}, {
+					"is_null": []
+				}, {
+					"not_null": []
+				}, {
+					"hour": ["int"]
+				}, {
+					"minute": ["int"]
+				}, {
+					"before": ["time"]
+				}, {
+					"after": ["time"]
+				}
+			],
+			"boolean": [{
+					"true": []
+				}, {
+					"false": []
+				}
+			]
+		},
+		"questions": [{
+				"question": "What's your favorite color?",
+				"preset_answers": null,
+				"question_id": "question_9147"
+			}, {
+				"question": "What's your favorite pet?",
+				"preset_answers": ["dog", "cat", "others"],
+				"question_id": "question_9148"
+			}
+		],
+		"predefined_rules": [{
+				"rule": "Recent pay last month",
+				"preset_answer": ["$0-$50", "$50-$200", "$200-$1000", "Over $1000", "input_long"],
+				"rule_id": "rule_1828"
+			}, {
+				"rule": "Number of visits last month",
+				"preset_answer": ["0-3", "3-5", "5-10", "Over 10", "input_long"],
+				"rule_id": "rule_1829"
+			}
+		],
+		"ruleengine_configs": {
+			"system_time": "GMT+7",
+			"unit": "standard"
+		}
+	}
+}
+
+
+    main_indices = indices.master_file.elasticsearch_mapping;
+    console.log(main_indices) 
+    node = traverseMasterFileObject(main_indices);
+    makeID(node)
+	
+    var ii, jj;
+    var index_list =Object.keys(indices.master_file.elasticsearch_mapping);
+    var defined_operator_list =Object.keys(indices.master_file.datatypes_operators);
+    var index_option ='';
+    for (ii=0; ii < index_list.length; ii++) {
+	   var  elastic_att = Object.keys(main_indices[index_list[ii]].mappings);
+       index_option =index_option + '<option value="' + elastic_att +'">' + index_list[ii] +'</option>';      
+    }
+	
+    $('#index').html(index_option);
+   
+    var elastic_operators ={};
+    var validators ={};
+    for (ii=0; ii < defined_operator_list.length; ii++) {
+       op_index = Object.keys(indices.master_file.datatypes_operators[defined_operator_list[ii]]);
+       ops =[];
+       for (kk=0; kk < op_index.length; kk++){
+         ops[kk] = Object.keys(indices.master_file.datatypes_operators[defined_operator_list[ii]][op_index[kk]])
+       }
+      elastic_operators[defined_operator_list[ii]] =ops; 
+
+         validators[defined_operator_list[ii]] ={};
+       for (jj=0; jj < ops.length; jj++){
+           validators[defined_operator_list[ii]][ops[jj]] =indices.master_file.datatypes_operators[defined_operator_list[ii]][op_index[jj]][ops[jj]];
+       }
+
+
+    }
+	
+	var builtin_operators= ['equal','not_equal','in','not_in','less','less_or_equal','greater','greater_or_equal','between','not_between','begins_with',
+	'not_begins_with','contains','not_contains','ends_with','not_ends_with','is_empty','is_not_empty','is_null','is_not_null'];
+	var builtin_type= ['string', 'integer', 'double', 'date', 'time', 'datetime', 'boolean'];
+	var opp_mapping = {'equal':'equal','not_equals':'not_equal','not_equal':'not_equal','less':'less','before':'less','less_or_equal':'less_or_equal',
+					'greater':'greater','after':'greater','greater_or_equal':'greater_or_equal','between':'between','not_between':'not_between', 'is_null':'is_null','not_null':'is_not_null',
+					 'begin_with':'begins_with','not_begin_with':'not_begins_with','contain':'contains','not_contain':'not_contains','end_with':'ends_with',
+					 'not_end_with':'not_ends_with'
+				  };
+	 var type_props ={'text':'string','string':'string','long':'integer','date':'date','datetime':'datetime'};
+  
+  
+  
+    /******************************** jquerybuilder ************************/
+    $(function(){
+     $('#index').change(function() {
+       
+        index = $('#index').children('option:selected').val();
+	   //alert(index)
+        console.log(index)
+	    current_node = findNode(node,index);
+	    filters =new Array();
+	    buildFilters(current_node,filters);
+
+         console.log(filters)
+         $('#builder').queryBuilder('destroy');
+         $('#builder').queryBuilder({
+              plugins: ['bt-tooltip-errors'],
+              
+             
+              
+              filters: filters
+                  
+              
+            });
+
+         $('#builder').queryBuilder('reset');
+        });
+        $('#builder').queryBuilder('setFilters', true, filters);
+
+       
+    });
+
+      $('#btn-reset').on('click', function() {
+        $('#builder').queryBuilder('reset');
+      });
+	  
+     /*********Tree view for the master file********/
+	
+	 var tree_master = printTree(node);
+	 $('.tree').html(tree_master);
+	var tree = document.querySelectorAll('ul.tree a:not(:last-child)');
+	for(var i = 0; i < tree.length; i++){
+		tree[i].addEventListener('click', function(e) {
+			var parent = e.target.parentElement;
+			var classList = parent.classList;
+			if(classList.contains("open")) {
+				classList.remove('open');
+				var opensubs = parent.querySelectorAll(':scope .open');
+				for(var i = 0; i < opensubs.length; i++){
+					opensubs[i].classList.remove('open');
+				}
+			} else {
+				classList.add('open');
+			}
+			e.preventDefault();
+		});
+	}
+	
+	/********* end tree view for the master file********/
+
+
+	  /******************************** end jquerybuilder ************************/
+
+    
+      $('#btn-get').on('click', function() {
+        var jquery_rules = $('#builder').queryBuilder('getRules');
+        var index = $('#index').val();
+        console.log(JSON.stringify({'index': index,'query:': jquery_rules}))
+         $('#querybuilderrule').text(JSON.stringify({'index': index,'query:': jquery_rules}))
+        if (!$.isEmptyObject(jquery_rules)) {
+            $.ajax({
+            url: '/query_elastic',
+            contentType: "application/json",
+            data: JSON.stringify({'index': index,'query': jquery_rules}),
+            type: 'POST',
+            success: function(response) {
+
+                 console.log(response)
+                $('#elasticresultrule').text(response)
+
+            },
+            error: function(error) {
+                console.log(error);
+                $('#elasticresultrule').html(error)
+            }
+          });
+
+        }
+      });
+	
+	
+	/***********************************************Required functions*************************************************************/
+	
+    function Node(name,id, type, nodes, parent){
+        this.name = name;
+	    this.id = id;
+    	this.type =  type;
+        this.nodes = nodes;
+		this.parent = parent;
+		this.name_org = name;
+    }
+	function printTree(node){
+		text ='';
+		if (node != null){
+		    var name = node.name_org;
+			var type_prop = node.type;
+			if (node.nodes == null){ // this is a leaf
+
+				text = text + '<li><a href="#">' + name + ' (' + type_prop + ') </a> </li>';
+			}
+			else{
+				text = text + '<li><a href="#">' + name + ' (' + type_prop + ') </a>';
+
+				text =  text + '<ul>';
+				var jj;
+				for (jj= 0; jj < node.nodes.length; jj++){
+				    text = text + printTree(node.nodes[jj]);
+				}
+				text =  text + '</ul></li>';
+
+				
+			}
+		}
+		return text
+		
+	}
+    /** traverse functions **/
+    function traverseMasterFileObject(main_indices){
+            index_option ='';
+            index_list =  Object.keys(main_indices);
+            console.log('main_index')
+            console.log(main_indices)
+            console.log('Ind...')
+            console.log(index_list)
+            var nodes = new Array();
+			var master_node = new Node('master','master','indices',nodes,null)
+            for (ii=0; ii < index_list.length; ii++) {
+                index_option =index_option + '<option val="' + ii +'">' + index_list[ii] +'</option>';
+                
+                var  elastic_att = Object.keys(main_indices[index_list[ii]].mappings);
+                var att = main_indices[index_list[ii]]['mappings'][elastic_att];
+               
+               console.log('att:... ')
+               console.log(att)               
+               master_node.nodes.push(traverseObjects(att,index_list[ii],elastic_att,'index',master_node))
+                 
+             }
+            return master_node;
+
+    }
+    function traverseObjects(att_indices,att_name,att_id,att_type, parent){
+             var  property_list = Object.keys(att_indices.properties);
+             console.log('Att name:' + att_name  )
+              console.log('List of properties...')
+              console.log(property_list)
+              var jj;
+			  var nodes = new Array();
+			  var node = new Node(att_name,att_id,att_type,nodes,parent);
+              for (jj= 0; jj < property_list.length; jj++) {
+                 		 var property = att_indices.properties[property_list[jj]];
+                         if (property.hasOwnProperty('type')){
+                            var  type= property.type;
+                         }
+                         else{
+                            var type ='index'
+                         }
+                        
+                         console.log(type)
+                         console.log('property...')
+                         console.log(property)
+                         console.log(att_indices.properties)
+                         
+                         if (type == 'index' || type == 'nested') {
+                         	
+                            node.nodes.push(traverseObjects(property,property_list[jj],property_list[jj],type,node));
+                        }
+                        else{
+                            node.nodes.push(new Node(property_list[jj],property_list[jj], type, null, node));
+                        }
+                       
+                   
+                   
+                 
+             }
+            return node;
+      }
+	 /** end traverse functions **/
+	 
+	function makeID(node){
+	    if (node != null){
+		
+			if (node.type == 'nested' || (node.parent != null && node.parent.type == 'nested')){
+		        node.id = node.parent.id + '.' + node.id;
+				if (node.parent != null && node.parent.type == 'nested'){
+					node.name = node.parent.name + '->' + node.name;
+				}
+
+				console.log(node.id)				
+				
+			}
+			var jj;
+			if (node.nodes != null){
+				for (jj= 0; jj < node.nodes.length; jj++){
+					makeID(node.nodes[jj])
+			}
+			}
+		}	
+			
+			
+	}
+	function findNode(node,id){
+	    found_node = null;
+	    if (node != null && node.id == id){
+		   console.log(node)
+		   return node;
+		}
+		else{
+		    if (node.nodes != null){
+				 var jj;
+				for (jj= 0; jj < node.nodes.length; jj++){
+					found_node = findNode(node.nodes[jj],id);
+					if (found_node !== null) {
+					  return found_node;
+					}
+				}
+			}	
+						
+		}
+		return found_node;
+		
+	}
+	
+	
+    function buildFilters(node,filters){
+	
+		if (node != null){
+			if (node.nodes == null){ // this is a leaf
+
+						   var prop = node.name;
+						   var id = node.id;
+						   var type_prop = node.type;
+						   console.log(prop + ':' + type_prop)
+						   if (type_prop =='text'){
+							  type_prop ='string';
+						   }
+						   console.log(type_prop)
+						   var type_ops = elastic_operators[type_prop];
+						   console.log(type_ops);
+						   query_ops = new Set();
+						   for (ii=0; ii< type_ops.length; ii++){
+							   
+								if (type_ops[ii] in opp_mapping){
+									query_ops.add(opp_mapping[type_ops[ii]]);
+								}
+								else {
+								   
+									query_ops.add('equal');
+								}
+								
+							}
+						   if (type_prop == 'date'){
+									filter =  {
+									id: id, 
+									label: prop,
+
+									type: 'date',
+									operators:Array.from(query_ops) ,    
+									validation: {
+									  format: 'YYYY-MM-DD'
+									},
+									plugin: 'datepicker',
+									plugin_config: {
+									  format: 'yyyy-mm-dd',
+									  todayBtn: 'linked',
+									  todayHighlight: true,
+									  autoclose: true
+									}
+								  };
+						   } else{            
+
+										  filter =  {id: id, 
+										   label: prop, 
+										   type:type_props[type_prop],
+										   operators:Array.from(query_ops)}     
+							}    
+						filters.push(filter)
+		    }
+			else{
+				var jj;
+				for (jj= 0; jj < node.nodes.length; jj++){
+						buildFilters(node.nodes[jj],filters);   
+				}
+			}
+		}
+		
+	}
+   </script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Mar 21 15:30:16 2019
+
+@author: thuan ngo tungfint
+"""
+
+from flask import Flask, render_template, request
+from elasticsearch import Elasticsearch
+import requests
+import json
+from querybuilder.rules import Rule
+from flask_restful import  Api
+from source.model.user import User, UserAll
+from source.model.query import Query, QueryAll, ExecuteQuery
+from source.model.segmentation import Segmentation, SegAll, ExecuteSegmentation
+from source.model.personalization import Personalization, PerAll, ExecutePersonalization
+
+import source.utilities.jquerybuilder2elasticquery
+
+es = Elasticsearch( hosts = [{'host': '35.237.224.155', 'port': 9200}])
+res = requests.get('http://35.237.224.155:9200')
+print(res)
+
+app = Flask(__name__)
+
+############################# Webserver Controller ###########################################################
+@app.route("/")
+def home():
+    with open("MasterFile.json") as f:
+        data = json.load(f)
+    print(data)
+    return render_template("index.html",indices = data)
+
+
+@app.route("/query_elastic", methods=['POST'])
+def query_elaticsearch():
+    jsonRule = request.get_json();
+    print(jsonRule)
+    index = jsonRule['index'];
+    query = jsonRule['query'];
+    print(query)
+    jqueryRule = Rule(query)
+    print(jqueryRule.to_dict())
+    q = source.utilities.jquerybuilder2elasticquery.to_esl_query(jqueryRule)
+    print('Query:\n' )
+    print(q.to_dict())
+    res = es.search(index=index, body={'query':q.to_dict()})
+    print(res)
+    return json.dumps({'index' : index, 'query': q.to_dict(),'result':str(res['hits']['hits'])});
+
+
+
+# ES inf
+
+####################### API Portal Controller ###########################################################
+
+###--- search, add, update, delete users ---###
+
+##############################################################
+indexes = ['shoppers','favorite_recipes']
+doc_type = ['shopper', 'favorite_recipe']
+ii =0
+_index = indexes[ii]
+_doc_type = doc_type[ii]
+
+_index_query = 'querydb'
+_doc_query = 'doc'
+
+_index_seg = 'segmentation'
+_doc_seg = 'doc'
+
+_index_per = 'personalization'
+_doc_per = 'doc'
+
+api = Api(app)
+
+test_query = {"query": { "match": { "name": "Tung" } } }
+
+
+# =============================================================================
+# User - Index: _index
+# ============================================================userID=================
+###--- CRUD (Creat, Read, Update, Delete) Users ---###
+
+User.make_api(es,_index,_doc_type)
+UserAll.make_api(es,_index)
+
+api.add_resource(User, "/user/<string:userID>")
+api.add_resource(UserAll, "/user/all")
+
+# =============================================================================
+# Query - Index: queryDB
+# ============================================================================
+
+Query.make_api(request,es,_index_query,_doc_query)
+QueryAll.make_api(es,_index_query)
+ExecuteQuery.make_api(es, _index_query)
+
+api.add_resource(Query, "/method/query/<string:queryID>") # GET - POST - PUT - DELETE query
+api.add_resource(QueryAll, "/method/query/all") # Get all query
+api.add_resource(ExecuteQuery, "/method/query/execute/<string:queryID>") #  EXECUTE query
+
+
+# =============================================================================
+# Segmentation
+# =============================================================================
+
+Segmentation.make_api( request, es,_index_seg, _doc_seg)
+SegAll.make_api(es,_index_seg)
+ExecuteSegmentation.make_api( es,_index_seg, _index_query)
+
+api.add_resource(Segmentation, "/method/segmentation/<string:segID>") # GET - POST - PUT - DELETE segmentation
+api.add_resource(SegAll, "/method/segmentation/all") # Get all segmentation
+api.add_resource(ExecuteSegmentation, "/method/segmentation/execute/<string:segID>") #  EXECUTE segmentation
+
+# =============================================================================
+# Personalization
+# =============================================================================
+
+Personalization.make_api( request, es,_index_per, _doc_per)
+PerAll.make_api( es,_index_per)
+ExecutePersonalization.make_api( es, _index_per, _index_query)
+
+api.add_resource(Personalization, "/method/personalization/<string:perID>") # GET - POST - PUT - DELETE personalization
+api.add_resource(PerAll, "/method/personalization/all") # Get all personalization
+api.add_resource(ExecutePersonalization, "/method/personalization/execute/<string:userID>/<string:perID>") #  EXECUTE personalization
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0')
+    
+    
+

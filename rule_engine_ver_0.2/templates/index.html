@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/query-builder.default.min.css">
+</head>
+<body>
+
+
+ <label for="index">Select index (select one):</label>
+      <select class="form-control" id="index" >
+        
+      </select>
+
+    <div id="builder">
+    </div>
+    <div class="btn-group">
+
+        <button id="btn-reset" class="btn btn-warning reset" data-target="basic">Reset</button>
+        <button id="btn-get" class="btn btn-primary parse-json" data-target="basic">Get rules</button>
+    </div>
+ </br>
+ <label for="querybuilderrule">Querybuilder rules:</label>
+ </br>
+ <textarea name="" id="querybuilderrule" rows="4" cols="50"></textarea>
+</br>
+  <label for="elasticresultrule">Elastic rules and search results:</label>
+ </br>
+ <textarea name="" id="elasticresultrule" rows="4" cols="50" ></textarea>
+</br>
+
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/doT.min.js"></script>
+    <script src="static/js/jQuery.extendext.min.js"></script>
+    <script src="static/js/query-builder.min.js"></script>
+    <script src="static/js/query-builder-elasticsearch.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script src="static/js/bootstrap-datepicker.min.js"></script>
+    <script src="static/js/moment.min.js"></script>
+    <script type="text/javascript">
+
+   {% autoescape false %}
+    var index_info = '{{indices|tojson}}'
+
+   {% endautoescape %}
+
+    var indices = JSON.parse(index_info);
+    console.log(indices)
+    var ii, jj;
+    var index_list =Object.keys(indices.master_file.elasticsearch_mapping);
+    var defined_operator_list =Object.keys(indices.master_file.datatypes_operators);
+    var property_types = {};
+    var properties ={};
+    index_option ='';
+    for (ii=0; ii < index_list.length; ii++) {
+       index_option =index_option + '<option val="' + ii +'">' + index_list[ii] +'</option>';
+       elastic_att = Object.keys(indices.master_file.elasticsearch_mapping[index_list[ii]].mappings);
+       property_list = Object.keys(indices.master_file.elasticsearch_mapping[index_list[ii]].mappings[elastic_att].properties);
+       properties[index_list[ii]] = property_list;
+       property_types[index_list[ii]] = {};
+       console.log(property_list)
+           for (jj= 0; jj < property_list.length; jj++) {
+           type= indices.master_file.elasticsearch_mapping[index_list[ii]].mappings[elastic_att].properties[property_list[jj]].type;
+           console.log(type)
+           property_types[index_list[ii]][property_list[jj]] = type;
+       }
+      
+    }
+   
+     
+    var elastic_operators ={};
+    var validators ={};
+    for (ii=0; ii < defined_operator_list.length; ii++) {
+       op_index = Object.keys(indices.master_file.datatypes_operators[defined_operator_list[ii]]);
+       ops =[];
+       for (kk=0; kk < op_index.length; kk++){
+         ops[kk] = Object.keys(indices.master_file.datatypes_operators[defined_operator_list[ii]][op_index[kk]])
+       }
+      elastic_operators[defined_operator_list[ii]] =ops; 
+
+         validators[defined_operator_list[ii]] ={};
+       for (jj=0; jj < ops.length; jj++){
+           validators[defined_operator_list[ii]][ops[jj]] =indices.master_file.datatypes_operators[defined_operator_list[ii]][op_index[jj]][ops[jj]];
+       }
+
+
+    }
+var builtin_operators= ['equal','not_equal','in','not_in','less','less_or_equal','greater','greater_or_equal','between','not_between','begins_with',
+'not_begins_with','contains','not_contains','ends_with','not_ends_with','is_empty','is_not_empty','is_null','is_not_null'];
+var builtin_type= ['string', 'integer', 'double', 'date', 'time', 'datetime', 'boolean'];
+var opp_mapping = {'equal':'equal','not_equals':'not_equal','not_equal':'not_equal','less':'less','before':'less','less_or_equal':'less_or_equal',
+                'greater':'greater','after':'greater','greater_or_equal':'greater_or_equal','between':'between','not_between':'not_between', 'is_null':'is_null','not_null':'is_not_null',
+                 'begin_with':'begins_with','not_begin_with':'not_begins_with','contain':'contains','not_contain':'not_contains','end_with':'ends_with',
+                 'not_end_with':'not_ends_with'
+              };
+
+
+ var type_props ={'text':'string','string':'string','nested':'string','long':'integer','date':'date','datetime':'datetime'};
+
+
+    operators = [
+                'equal', 'not_equal', 'is_null',
+                 { type: 'contains_any', nb_inputs: 2, multiple: true, apply_to: ['string'] },
+              ];
+   $('#index').html(index_option);
+  
+    $(function(){
+     $('#index').change(function() {
+       
+       index = $('#index option:selected').text();
+         
+       property_list= properties[index];
+
+                  console.log(index)
+      filters =[];
+       for (jj= 0; jj < property_list.length; jj++) {
+
+           prop = property_list[jj];
+
+           type_prop = property_types[index][prop];
+           console.log(prop + ':' + type_prop)
+           if (type_prop =='text' || (type_prop =='nested')){
+              type_prop ='string';
+           }
+           type_ops = elastic_operators[type_prop];
+           console.log(type_ops)
+           query_ops = new Set();
+           for (ii=0; ii< type_ops.length; ii++){
+               
+                if (type_ops[ii] in opp_mapping){
+                    query_ops.add(opp_mapping[type_ops[ii]])
+                }
+                else {
+                   
+                    query_ops.add('equal')
+                }
+                
+            }
+           if (type_prop == 'date'){
+                    filters[jj] =  {
+                    id: prop, 
+                    label: prop,
+
+                    type: 'date',
+                    operators:Array.from(query_ops) ,    
+                    validation: {
+                      format: 'YYYY-MM-DD'
+                    },
+                    plugin: 'datepicker',
+                    plugin_config: {
+                      format: 'yyyy-mm-dd',
+                      todayBtn: 'linked',
+                      todayHighlight: true,
+                      autoclose: true
+                    }
+                  }
+           } else{            
+
+                          filters[jj] =  {id: prop, 
+                           label: prop, 
+                           type:type_props[type_prop],
+                           operators:Array.from(query_ops)}     
+            }     
+       }
+         console.log(filters)
+         $('#builder').queryBuilder('destroy');
+         $('#builder').queryBuilder({
+              plugins: ['bt-tooltip-errors'],
+              
+             
+              
+              filters: filters
+                  
+              
+            });
+
+         $('#builder').queryBuilder('reset');
+        });
+        $('#builder').queryBuilder('setFilters', true, filters);
+
+       
+    });
+   
+
+    
+
+      $('#btn-reset').on('click', function() {
+        $('#builder').queryBuilder('reset');
+      });
+      
+    
+      
+      $('#btn-get').on('click', function() {
+        var jquery_rules = $('#builder').queryBuilder('getRules');
+        var index = $('#index').val();
+        console.log(JSON.stringify({'index': index,'query:': jquery_rules}))
+         $('#querybuilderrule').text(JSON.stringify({'index': index,'query:': jquery_rules}))
+        if (!$.isEmptyObject(jquery_rules)) {
+          // alert(JSON.stringify(result, null, 2));
+            $.ajax({
+            url: '/query_elastic',
+            contentType: "application/json",
+            data: JSON.stringify({'index': index,'query': jquery_rules}),
+            type: 'POST',
+            success: function(response) {
+
+                 console.log(response)
+                $('#elasticresultrule').text(response)
+
+            },
+            error: function(error) {
+                console.log(error);
+                $('#elastic_rule').html(error)
+            }
+          });
+
+        }
+      });
+   </script>
+</body>
+</html>
