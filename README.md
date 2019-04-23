@@ -5,7 +5,7 @@
 ## Easy usage
 The Rule Engine server run on a Flask API framework, which is currently available online at: http://35.237.224.155/
 
-Endpoints description could be seen on a Swagger site at: https://app.swaggerhub.com/apis/deepengine/Shopper/
+Endpoints description could be seen on a Swagger site at: https://app.swaggerhub.com/apis/deepengine/RuleEngine/0.2
 
 
 ## Deployment
@@ -40,6 +40,8 @@ The Swagger server has its own README for deployment.
 
 ## Other Usages
 The Google Cloud VM has been paid for several months and will be open for free usage (for now), we are currently running an ElasticSearch instance, with Kibana, which could be accessed at: http://35.237.224.155:5601
+
+There is also a demo html running on http://35.237.224.155:5000 for rule creation. However, this server is not regularly updated. Please see MasterfileTraversal.html in each version.
 
 ## Note
 - Please note that the current "Try it out" function on the Swagger site won't work, however, the Rule Engine server works with other methods such as curl or Postman.
