@@ -27,7 +27,7 @@ python -m pip install -r requirements.txt
 
 3. Cd to querybuilder, then run:
 ```
-python setup.py
+python setup.py install
 ```
 
 4. Then simply run the server by:
