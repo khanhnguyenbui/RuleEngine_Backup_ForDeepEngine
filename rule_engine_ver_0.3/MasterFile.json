@@ -1,0 +1,595 @@
+{
+	"master_file": {
+		"elasticsearch_mapping": {
+			"favorite_recipes": {
+				"mappings": {
+					"favorite_recipe": {
+						"properties": {
+							"createTime": {
+								"type": "long"
+							},
+							"favoriteRecipeId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"isFavorite": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"recipeId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shopperId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"shopping_list_items": {
+				"mappings": {
+					"shopping_list_item": {
+						"properties": {
+							"bpcId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"checkedState": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"createTime": {
+								"type": "date"
+							},
+							"dataSource": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"deleteTime": {
+								"type": "date"
+							},
+							"productId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shopperId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shoppingListItemId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"text": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"updateTime": {
+								"type": "date"
+							}
+						}
+					}
+				}
+			},
+			"preferred_stores": {
+				"mappings": {
+					"preferred_store": {
+						"properties": {
+							"createTime": {
+								"type": "date"
+							},
+							"preferredStoreId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shopperId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"storeId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"shoppers": {
+				"mappings": {
+					"shopper": {
+						"properties": {
+							"shopperID": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shopperId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"validFields": {
+								"type": "nested",
+								"properties": {
+									"birthDate": {
+										"type": "long"
+									},
+									"birthMonth": {
+										"type": "long"
+									},
+									"birthYear": {
+										"type": "long"
+									},
+									"email": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									},
+									"firstName": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									},
+									"gender": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									},
+									"lastName": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									},
+									"phoneNumber": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									},
+									"photoURL": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									},
+									"point": {
+										"type": "long"
+									},
+									"postalCode": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"shopper_values": {
+				"mappings": {
+					"shopper_value": {
+						"properties": {
+							"id": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"isActive": {
+								"type": "boolean"
+							},
+							"name": {
+								"type": "text"
+							},
+							"type": {
+								"type": "text"
+							}
+						}
+					}
+				}
+			},
+			"questions": {
+				"mappings": {
+					"question": {
+						"properties": {
+							"answers": {
+								"type": "nested",
+								"properties": {
+									"answers": {
+										"type": "nested"
+									},
+									"createTime": {
+										"type": "date"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"answers": {
+				"mappings": {
+					"answer": {
+						"properties": {
+							"answerId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"answers": {
+								"type": "nested",
+								"properties": {
+									"4028828a68daacdb0168dacf1cf00000": {
+										"type": "long"
+									},
+									"4028828a68daacdb0168dacf4ce10001": {
+										"type": "date"
+									},
+									"4028828a68daacdb0168dacf6eac0002": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									},
+									"4028828a68daacdb0168dacf7c190003": {
+										"type": "text",
+										"fields": {
+											"keyword": {
+												"type": "keyword",
+												"ignore_above": 256
+											}
+										}
+									}
+								}
+							},
+							"createTime": {
+								"type": "date"
+							},
+							"questionId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shopperId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"shared_recipes": {
+				"mappings": {
+					"shared_recipe": {
+						"properties": {
+							"createTime": {
+								"type": "date"
+							},
+							"recipeId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"sharedRecipeId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shopperId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"rated_recipes": {
+				"mappings": {
+					"rated_recipe": {
+						"properties": {
+							"createTime": {
+								"type": "date"
+							},
+							"ratedRecipeId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"rating": {
+								"type": "long"
+							},
+							"recipeId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							},
+							"shopperId": {
+								"type": "text",
+								"fields": {
+									"keyword": {
+										"type": "keyword",
+										"ignore_above": 256
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"datatypes_operators": {
+			"long": [{
+					"equal": ["int"]
+				}, {
+					"not_equals": ["int"]
+				}, {
+					"less": ["int"]
+				}, {
+					"less_or_equal": ["int"]
+				}, {
+					"greater": ["int"]
+				}, {
+					"greater_or_equal": ["int"]
+				}, {
+					"between": ["int", "int"]
+				}, {
+					"not_between": ["int", "int"]
+				}, {
+					"is_null": []
+				}, {
+					"not_null": []
+				}
+			],
+			"string": [{
+					"equal": ["string"]
+				}, {
+					"not_equal": ["string"]
+				}, {
+					"is_null": []
+				}, {
+					"not_null": []
+				}, {
+					"begin_with": ["string"]
+				}, {
+					"not_begin_with": ["string"]
+				}, {
+					"contain": ["string"]
+				}, {
+					"not_contain": ["string"]
+				}, {
+					"end_with": ["string"]
+				}, {
+					"not_end_with": ["string"]
+				}
+			],
+			"date": [{
+					"equal": ["date"]
+				}, {
+					"not_equal": ["date"]
+				}, {
+					"between": ["date", "date"]
+				}, {
+					"not_between": ["date", "date"]
+				}, {
+					"is_null": []
+				}, {
+					"not_null": []
+				}, {
+					"age": ["int"]
+				}, {
+					"year": ["int"]
+				}, {
+					"month/date": ["int"]
+				}, {
+					"month": ["int"]
+				}, {
+					"date": ["int"]
+				}, {
+					"before": ["date"]
+				}, {
+					"after": ["date"]
+				}
+			],
+			"time": [{
+					"equal": ["time"]
+				}, {
+					"not_equal": ["time"]
+				}, {
+					"between": ["time", "time"]
+				}, {
+					"not_between": ["time", "time"]
+				}, {
+					"is_null": []
+				}, {
+					"not_null": []
+				}, {
+					"hour": ["int"]
+				}, {
+					"minute": ["int"]
+				}, {
+					"before": ["time"]
+				}, {
+					"after": ["time"]
+				}
+			],
+			"boolean": [{
+					"true": []
+				}, {
+					"false": []
+				}
+			]
+		},
+		"questions": [{
+				"question": "What's your favorite color?",
+				"preset_answers": null,
+				"question_id": "question_9147"
+			}, {
+				"question": "What's your favorite pet?",
+				"preset_answers": ["dog", "cat", "others"],
+				"question_id": "question_9148"
+			}
+		],
+		"predefined_rules": [{
+				"rule": "Recent pay last month",
+				"preset_answer": ["$0-$50", "$50-$200", "$200-$1000", "Over $1000", "input_long"],
+				"rule_id": "rule_1828"
+			}, {
+				"rule": "Number of visits last month",
+				"preset_answer": ["0-3", "3-5", "5-10", "Over 10", "input_long"],
+				"rule_id": "rule_1829"
+			}
+		],
+		"ruleengine_configs": {
+			"system_time": "GMT+7",
+			"unit": "standard"
+		}
+	}
+}
+

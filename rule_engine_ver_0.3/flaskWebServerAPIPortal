@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Mar 21 15:30:16 2019
+
+@author: thuan ngo tungfint
+"""
+
+from flask import Flask, render_template, request
+from elasticsearch import Elasticsearch
+import requests
+import json
+from querybuilder.rules import Rule
+from flask_restful import  Api
+from source.model.segmentation import ExecuteSegmentation
+from source.model.personalization import ExecutePersonalization
+
+import source.utilities.jquerybuilder2elasticquery
+
+es = Elasticsearch( hosts = [{'host': '35.237.224.155', 'port': 9200}])
+res = requests.get('http://35.237.224.155:9200')
+#print(res)
+
+app = Flask(__name__)
+
+############################# Webserver Controller ###########################################################
+@app.route("/")
+def home():
+    with open("MasterFile.json") as f:
+        data = json.load(f)
+    return render_template("index.html",indices = data)
+
+
+@app.route("/query_elastic", methods=['POST'])
+def query_elaticsearch():
+    jsonRule = request.get_json();
+    index = jsonRule['index'];
+    query = jsonRule['query'];
+    jqueryRule = Rule(query)
+    q = source.utilities.jquerybuilder2elasticquery.to_esl_query(jqueryRule)
+    res = es.search(index=index, body={'query':q.to_dict()})
+    return json.dumps({'index' : index, 'query': q.to_dict(),'result':str(res['hits']['hits'])});
+
+# ES inf
+
+####################### API Portal Controller ###########################################################
+
+_index_query = 'queries'
+_doc_query = 'query'
+
+_index_seg = 'segmentations'
+_doc_seg = 'segmentation'
+
+_index_per = 'personalizations'
+_doc_per = 'personalization'
+
+api = Api(app)
+
+# =============================================================================
+# Segmentation
+# =============================================================================
+
+ExecuteSegmentation.make_api( es,_index_seg, _index_query)
+
+api.add_resource(ExecuteSegmentation, "/method/segmentation/execute/<string:segID>") #  EXECUTE segmentation
+
+# =============================================================================
+# Personalization
+# =============================================================================
+
+ExecutePersonalization.make_api( es, _index_per, _index_query)
+
+api.add_resource(ExecutePersonalization, "/method/personalization/execute/<string:userID>/<string:perID>") #  EXECUTE personalization
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0')
