@@ -60,8 +60,8 @@ _doc_per = 'personalization'
 _index_assignment = 'assignments'
 _type_assignment = 'assignment'
 
-_index_assignedcontent = 'assignedcontents'
-_type_assignedcontent = 'assignedcontent'
+_index_assignedcontent = 'assigned_contents'
+_type_assignedcontent = 'assigned_content'
 
 api = Api(app)
 
