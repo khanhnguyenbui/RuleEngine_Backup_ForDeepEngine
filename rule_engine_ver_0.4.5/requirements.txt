@@ -1,0 +1,9 @@
+Flask
+Flask-RESTful
+Flask-SQLAlchemy
+uwsgi
+pandas
+elasticsearch
+elasticsearch_dsl
+requests_aws4auth
+flask-cors
