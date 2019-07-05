@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Mar 21 15:30:16 2019
+
+@author: thuan ngo tungfint
+"""
+
+from flask import Flask, render_template, request
+from flask_cors import CORS, cross_origin
+from elasticsearch import Elasticsearch
+import requests
+import json
+from querybuilder.rules import Rule
+from flask_restful import  Api
+from source.model.query import QueryAll, ExecuteQuery
+from source.model.NewIndex import NewIndex
+from source.model.segmentation import ExecuteSegmentation
+from source.model.personalization import ExecutePersonalization
+from source.model.DemoPersonalizationTrigger import DemoPersonalizationTrigger
+from source.model.DemoSegmentation import DemoSegmentation
+
+
+import source.utilities.jquerybuilder2elasticquery
+
+es = Elasticsearch( hosts = [{'host': '35.243.224.36', 'port': 9200}])
+#es = Elasticsearch()
+res = requests.get('http://35.243.224.36:9200')
+
+app = Flask(__name__)
+cors = CORS(app, resources={r"/method/*": {"origins": "*"}})
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+############################# Webserver Controller ###########################################################
+@app.route("/")
+def home():
+    with open("MasterFile.json") as f:
+        data = json.load(f)
+    return render_template("index.html",indices = data)
+
+
+@app.route("/query_elastic", methods=['POST'])
+def query_elaticsearch():
+    jsonRule = request.get_json();
+    index = jsonRule['index'];
+    query = jsonRule['query'];
+    jqueryRule = Rule(query)
+    q = source.utilities.jquerybuilder2elasticquery.to_esl_query(jqueryRule)
+    res = es.search(index=index, body={'query':q.to_dict()})
+    return json.dumps({'index' : index, 'query': q.to_dict(),'result':str(res['hits']['hits'])});
+
+# ES inf
+
+####################### API Portal Controller ###########################################################
+
+indexes = {
+    'index_query': 'queries',
+    'type_query': 'query',
+    
+    'index_segmentation': 'segmentations',
+    'type_segmentation': 'segmentation',
+    
+    'index_personalization': 'personalizations',
+    'type_personalization': 'personalization',
+    
+    'index_assignment': 'assignments',
+    'type_assignment': 'assignment',
+    
+    'index_assigned_content': 'assigned_contents',
+    'type_assigned_content': 'assigned_content',
+    
+    'index_content': 'contents',
+    'type_content': 'content',
+    
+    'index_competition_pool': 'competition_pools',
+    'type_competition_pool': 'competition_pool',
+        }
+
+api = Api(app)
+
+# =============================================================================
+# New Index
+# ============================================================================
+
+NewIndex.make_api(es, request)
+
+api.add_resource(NewIndex, "/newIndex") # add new doc into index
+
+# =============================================================================
+# Query - Index: queryDB
+# ============================================================================
+
+QueryAll.make_api(es, indexes)
+ExecuteQuery.make_api(es, indexes)
+
+api.add_resource(QueryAll, "/method/query/all") # Get all query
+api.add_resource(ExecuteQuery, "/method/query/execute/<string:queryID>") #  EXECUTE query
+
+# =============================================================================
+# Segmentation
+# =============================================================================
+
+ExecuteSegmentation.make_api( es, indexes)
+
+api.add_resource(ExecuteSegmentation, "/method/segmentation/execute/<string:segID>") #  EXECUTE segmentation
+
+# =============================================================================
+# Personalization
+# =============================================================================
+
+ExecutePersonalization.make_api( es, indexes)
+
+api.add_resource(ExecutePersonalization, "/method/personalization/execute/<string:userID>/<string:perID>") #  EXECUTE personalization
+
+# =============================================================================
+# DemoPersonalizationTrigger
+# =============================================================================
+
+DemoPersonalizationTrigger.make_api( es, indexes)
+
+api.add_resource(DemoPersonalizationTrigger, "/method/demoPersonalizationTrigger/<string:userID>/<string:triggerID>")
+
+# =============================================================================
+# DemoSegmentation
+# =============================================================================
+
+DemoSegmentation.make_api( es, indexes)
+
+api.add_resource(DemoSegmentation, "/method/demoSegmentation/<string:assignmentID>")
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0')
